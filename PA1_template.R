@@ -1,14 +1,9 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
-
-
-## Loading and preprocessing the data
+##----Load Data----
 
 activity_raw <- read.csv("activity.csv", stringsAsFactors=FALSE)
+
+##----Process Data----
+
 activity_raw$date <- as.POSIXct(activity_raw$date, format="%Y-%m-%d")
 
 activity_raw <- data.frame(date=activity_raw$date, 
@@ -27,7 +22,7 @@ activity <- data.frame(date=activity_raw$date,
                        interval=activity_raw$interval,
                        steps=activity_raw$steps)
 
-## What is mean total number of steps taken per day?
+##----Steps Histogram----
 
 sum_data <- aggregate(activity$steps, by=list(activity$date), FUN=sum, na.rm=TRUE)
 
@@ -40,11 +35,13 @@ hist(sum_data$total,
      ylim=c(0, 20), 
      main="Histogram of the total number of steps taken each day\n(NA removed)")
 
+##----Mean and Median Steps---
+
 mean(sum_data$total)
 
 median(sum_data$total)
 
-## What is the average daily activity pattern?
+##----Time Plot----
 
 mean_data <- aggregate(activity$steps, 
                        by=list(activity$interval), 
@@ -62,19 +59,27 @@ plot(mean_data$interval,
      ylab="Average number of steps", 
      main="Time-series of the average number of steps per intervals\n(NA removed)")
 
+##----Highest Interval----
+
 max_pos <- which(mean_data$mean == max(mean_data$mean))
 
 max_interval <- mean_data[max_pos, 1]
 
-## Imputing missing values
+max_interval
+
+##----Missing Values----
 
 NA_count <- sum(is.na(activity$steps))
+
+##----Replace Values----
 
 na_pos <- which(is.na(activity$steps))
 
 mean_vec <- rep(mean(activity$steps, na.rm=TRUE), times=length(na_pos))
 
 activity[na_pos, "steps"] <- mean_vec
+
+##----Revised Histogram----
 
 sum_data <- aggregate(activity$steps, by=list(activity$date), FUN=sum)
 
@@ -87,11 +92,13 @@ hist(sum_data$total,
      ylim=c(0, 30), 
      main="Histogram of the total number of steps taken each day\n(NA replaced by mean value)")
 
+##----Revised Mean and Median----
+
 mean(sum_data$total)
 
 median(sum_data$total)
 
-## Are there differences in activity patterns between weekdays and weekends?
+##----Weekday/Weekend Differences----
 
 library(lattice)
 

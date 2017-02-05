@@ -1,9 +1,14 @@
+---"
+title: "Reproducible Research: Peer Assessment 1"
+author: "Azodian""
+output: html_document
+---
 # Reproducible Research: Peer Assessment 1
-
 
 ## Loading and preprocessing the data
 ```{r}
 activity_raw <- read.csv("activity.csv", stringsAsFactors=FALSE)
+
 activity_raw$date <- as.POSIXct(activity_raw$date, format="%Y-%m-%d")
 
 activity_raw <- data.frame(date=activity_raw$date, 
@@ -21,8 +26,9 @@ activity <- data.frame(date=activity_raw$date,
                        daytype=activity_raw$daytype, 
                        interval=activity_raw$interval,
                        steps=activity_raw$steps)
+
 ```
-## What is mean total number of steps taken per day?
+## Histogram of the steps taken each day
 ```{r}
 sum_data <- aggregate(activity$steps, by=list(activity$date), FUN=sum, na.rm=TRUE)
 
@@ -34,11 +40,23 @@ hist(sum_data$total,
      xlab="Total number of steps", 
      ylim=c(0, 20), 
      main="Histogram of the total number of steps taken each day\n(NA removed)")
+```
+![Figure 1](Steps_Histogram.png)
 
+## What is mean total number of steps taken per day?
+```{r}
 mean(sum_data$total)
-
+```
+```
+## [1] 9354.23
+```
+```{r}
 median(sum_data$total)
 ```
+```
+## [1] 10395
+```
+
 ## What is the average daily activity pattern?
 ```{r}
 mean_data <- aggregate(activity$steps, 
@@ -56,10 +74,15 @@ plot(mean_data$interval,
      xlab="Interval [minutes]", 
      ylab="Average number of steps", 
      main="Time-series of the average number of steps per intervals\n(NA removed)")
-
+```
+![Figure 2](Timeplot.png)
+```{r}
 max_pos <- which(mean_data$mean == max(mean_data$mean))
 
 max_interval <- mean_data[max_pos, 1]
+```
+```
+## [1] 835
 ```
 ## Imputing missing values
 ```{r}
@@ -81,7 +104,9 @@ hist(sum_data$total,
      xlab="Total number of steps", 
      ylim=c(0, 30), 
      main="Histogram of the total number of steps taken each day\n(NA replaced by mean value)")
-
+```
+![Figure 3](Histogram_Modified.png)
+```{r}
 mean(sum_data$total)
 
 median(sum_data$total)
@@ -103,3 +128,4 @@ xyplot(mean ~ interval | daytype, mean_data,
        ylab="Number of steps", 
        layout=c(1,2))
 ```
+![Figure 4](Panelplot.png)

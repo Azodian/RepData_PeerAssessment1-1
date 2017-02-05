@@ -2,7 +2,7 @@
 
 
 ## Loading and preprocessing the data
-
+```{r}
 activity_raw <- read.csv("activity.csv", stringsAsFactors=FALSE)
 activity_raw$date <- as.POSIXct(activity_raw$date, format="%Y-%m-%d")
 
@@ -21,9 +21,9 @@ activity <- data.frame(date=activity_raw$date,
                        daytype=activity_raw$daytype, 
                        interval=activity_raw$interval,
                        steps=activity_raw$steps)
-
+```
 ## What is mean total number of steps taken per day?
-
+```{r}
 sum_data <- aggregate(activity$steps, by=list(activity$date), FUN=sum, na.rm=TRUE)
 
 names(sum_data) <- c("date", "total")
@@ -38,9 +38,9 @@ hist(sum_data$total,
 mean(sum_data$total)
 
 median(sum_data$total)
-
+```
 ## What is the average daily activity pattern?
-
+```{r}
 mean_data <- aggregate(activity$steps, 
                        by=list(activity$interval), 
                        FUN=mean, 
@@ -60,9 +60,9 @@ plot(mean_data$interval,
 max_pos <- which(mean_data$mean == max(mean_data$mean))
 
 max_interval <- mean_data[max_pos, 1]
-
+```
 ## Imputing missing values
-
+```{r}
 NA_count <- sum(is.na(activity$steps))
 
 na_pos <- which(is.na(activity$steps))
@@ -85,9 +85,9 @@ hist(sum_data$total,
 mean(sum_data$total)
 
 median(sum_data$total)
-
+```
 ## Are there differences in activity patterns between weekdays and weekends?
-
+```{r}
 library(lattice)
 
 mean_data <- aggregate(activity$steps, 
@@ -102,3 +102,4 @@ xyplot(mean ~ interval | daytype, mean_data,
        xlab="Interval", 
        ylab="Number of steps", 
        layout=c(1,2))
+```
